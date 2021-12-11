@@ -143,13 +143,13 @@ class ThreadScanner(threading.Thread):
 if __name__ == '__main__':
 
 	parser = argparse.ArgumentParser(description="Scan a single URL endpoint to see if it exists across many URLs", epilog="""EXAMPLE:
-		python3 endpointScanner.py -u \"/mgmt/shared/authn/login\" -i ipList.txt
+		python3 httpScanner.py -u \"/mgmt/shared/authn/login\" -i ipList.txt
 	OR
-		python3 endpointScanner.py -p "/owa/auth/logon.aspx" -i ipList.txt -t 10 -s '<!-- OwaPage = ASP.auth_logon_aspx -->'
+		python3 httpScanner.py -p "/owa/auth/logon.aspx" -i ipList.txt -t 10 -s '<!-- OwaPage = ASP.auth_logon_aspx -->'
 	OR
-		python3 endpointScanner.py -p "/WorkArea/java/ektron.site-data.js.ashx" -i ipList.txt -t 30 -s 'Ektron.Site' -d
+		python3 httpScanner.py -p "/WorkArea/java/ektron.site-data.js.ashx" -i ipList.txt -t 30 -s 'Ektron.Site' -d
 	OR
-		python3 endpointScanner.py -p "/login" -i ipList.txt -s "Grafana" -d
+		python3 httpScanner.py -p "/login" -i ipList.txt -s "Grafana" -d
 	""",formatter_class=argparse.RawDescriptionHelpFormatter)
 	parser.add_argument('-p', '--path', help='THe endpoint to scan (URL path), format: "/mgmt/ui/tms"')
 	parser.add_argument('-i', '--ips', help='File with list of IPs or Hostnames to test, can be FQDN, IP or CIDR notation, one per line')
