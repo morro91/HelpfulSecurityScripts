@@ -18,9 +18,9 @@ import base64
 
 ips2scan = []
 
-## TODO:
-## - Set up Tests
-################################
+####
+#### Tests to run
+####
 
 tests = []
 
@@ -193,7 +193,7 @@ class ThreadScanner(threading.Thread):
 
 if __name__ == '__main__':
 
-	parser = argparse.ArgumentParser(description="Scan a single URL endpoint to see if it exists across many URLs", epilog="""EXAMPLE:
+	parser = argparse.ArgumentParser(description="Scan a bunch of IPs with some JNDI paylods/tests", epilog="""EXAMPLE:
 		python3 jndiScanner.py -a pablo -i pabloTest.txt -d pablo.com -v
 	""",formatter_class=argparse.RawDescriptionHelpFormatter)
 	parser.add_argument('-i', '--ips', help='File with list of IPs or Hostnames to test, can be FQDN, IP or CIDR notation, one per line')
