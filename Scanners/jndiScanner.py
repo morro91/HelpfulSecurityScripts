@@ -200,7 +200,6 @@ if __name__ == '__main__':
 	parser.add_argument('-t', '--threads', nargs='?', default='1', help="Number of Threads to run", type=int)
 	parser.add_argument('-v', '--verbose', action='store_true', help='verbose levels of logging', default=False)
 	parser.add_argument('-r', '--random', action='store_true', default=True, help='randomise order of IPs')
-	parser.add_argument('-s', '--stringmatches', help='Either a single string match or a filename of line delimitered string matches. Matches to find in the HTTP response to match on')
 	parser.add_argument('-n', '--port', help='What port numbers, to hit, commma seperated. Default: 80,443', default='80,443')
 	parser.add_argument('-a', '--agency', help='What agency')
 	parser.add_argument('-d', '--domain', help='What DNS domain')
@@ -229,14 +228,7 @@ if __name__ == '__main__':
 			logging.error("Tne file %s doesn't exist." % (args.ips))
 			sys.exit()
 
-	stringMatches = []
 
-	if args.stringmatches:
-		if os.path.exists(args.stringmatches):
-			stringMatches = open(args.stringmatches,'r').readlines()
-			stringMatches = [s.strip() for s in stringMatches]
-		else:
-			stringMatches = [args.stringmatches]
 
 	''' Now read in the list of IPs '''
 	ips = open(args.ips, 'r').readlines()
