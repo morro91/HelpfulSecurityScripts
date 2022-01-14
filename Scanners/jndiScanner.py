@@ -203,14 +203,23 @@ if __name__ == '__main__':
 	parser.add_argument('-n', '--port', help='What port numbers, to hit, commma seperated. Default: 80,443', default='80,443')
 	parser.add_argument('-o', '--organisation', help='What Organisation')
 	parser.add_argument('-d', '--domain', help='What DNS domain')
+	parser.add_argument('-x', '--output', help='Output file')
 
 	args = parser.parse_args()
 
 	''' Setup logger '''
 	if args.verbose:
-		logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+		if args.output:
+			logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',handlers=[logging.StreamHandler(),logging.FileHandler(filename=args.output,mode='a')])		
+		else:
+			logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 	else:
-		logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+		if args.output:
+			logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',handlers=[logging.StreamHandler(),logging.FileHandler(filename=args.output,mode='a')])
+		else:
+			logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+	#logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 	if not args.organisation:
 		logging.error("Put in an ORGANISATION, fool")
